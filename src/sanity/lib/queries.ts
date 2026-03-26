@@ -118,3 +118,45 @@ export const dashboardStatsQuery = groq`{
   "pendingTopics": count(*[_type == "topic" && status == "pending"]),
   "activeJobs": count(*[_type == "blogPost" && status in ["generating", "scoring"]])
 }`
+
+// ── Drafts (rejected blogs — score < 90 or failed) ───────────────────────────
+export const draftsQuery = groq`
+  *[_type == "blogPost" && status in ["draft", "failed"]] | order(_createdAt desc) {
+    "id": _id,
+    title,
+    status,
+    score,
+    scoreBreakdown,
+    improvementNotes,
+    attempts,
+    "createdAt": _createdAt,
+    "websiteId": website->_id,
+    "topicId": topic->_id
+  }
+`
+
+// ── Analytics ─────────────────────────────────────────────────────────────────
+export const analyticsQuery = groq`{
+  "total": count(*[_type == "blogPost"]),
+  "published": count(*[_type == "blogPost" && status == "published"]),
+  "completed": count(*[_type == "blogPost" && status == "completed"]),
+  "drafts": count(*[_type == "blogPost" && status in ["draft", "failed"]]),
+  "generating": count(*[_type == "blogPost" && status in ["generating", "scoring"]]),
+  "avgScore": math::avg(*[_type == "blogPost" && defined(score)].score),
+  "topBlogs": *[_type == "blogPost" && defined(score)] | order(score desc)[0...5] {
+    "id": _id,
+    title,
+    score,
+    status,
+    "websiteDomain": website->domain
+  },
+  "websiteStats": *[_type == "website"] | order(_createdAt desc) {
+    "id": _id,
+    domain,
+    niche,
+    "blogCount": count(*[_type == "blogPost" && references(^._id)]),
+    "avgScore": math::avg(*[_type == "blogPost" && references(^._id) && defined(score)].score),
+    "publishedCount": count(*[_type == "blogPost" && references(^._id) && status == "published"]),
+    "draftCount": count(*[_type == "blogPost" && references(^._id) && status in ["draft", "failed"]])
+  }
+}`

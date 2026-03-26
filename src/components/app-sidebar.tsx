@@ -13,6 +13,9 @@ import {
   Bot,
   ChevronRight,
   UserCircle,
+  Archive,
+  BarChart2,
+  Plug,
 } from "lucide-react"
 import {
   Sidebar,
@@ -55,6 +58,21 @@ const NAV_ITEMS = [
     title: "Blogs",
     href: "/blogs",
     icon: FileText,
+  },
+  {
+    title: "Drafts",
+    href: "/drafts",
+    icon: Archive,
+  },
+  {
+    title: "Analytics",
+    href: "/analytics",
+    icon: BarChart2,
+  },
+  {
+    title: "Integrations",
+    href: "/integrations",
+    icon: Plug,
   },
   {
     title: "Settings",
