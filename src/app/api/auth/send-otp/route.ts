@@ -55,11 +55,20 @@ export async function POST(req: NextRequest) {
     await sanityClient.create({ _type: "otpToken", email, codeHash, expiresAt, type: "login" })
 
     // Send OTP
-    await sendOtpEmail(email, code, userName)
+    try {
+      await sendOtpEmail(email, code, userName)
+    } catch (emailErr) {
+      console.error("[send-otp] email send failed:", emailErr)
+      const msg = !process.env.RESEND_API_KEY
+        ? "Email service not configured — add RESEND_API_KEY to Vercel env vars."
+        : "Failed to send verification email. Please try again."
+      return NextResponse.json({ error: msg }, { status: 500 })
+    }
 
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error("[send-otp]", err)
-    return NextResponse.json({ error: "Failed to send OTP. Please try again." }, { status: 500 })
+    const msg = err instanceof Error ? err.message : "Failed to send OTP. Please try again."
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
