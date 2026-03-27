@@ -3,6 +3,8 @@ import { keywordClusterSchema } from "./keywordCluster"
 import { topicSchema } from "./topic"
 import { contentBriefSchema } from "./contentBrief"
 import { blogPostSchema } from "./blogPost"
+import { userSchema } from "./user"
+import { otpTokenSchema } from "./otpToken"
 
 export const schemaTypes = [
   websiteSchema,
@@ -10,4 +12,6 @@ export const schemaTypes = [
   topicSchema,
   contentBriefSchema,
   blogPostSchema,
+  userSchema,
+  otpTokenSchema,
 ]

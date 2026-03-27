@@ -1,3 +1,11 @@
+export interface User {
+  id: string
+  email: string
+  name: string
+  isVerified: boolean
+  createdAt: string
+}
+
 export type WebsiteStatus = "active" | "paused" | "error"
 export type TopicStatus = "pending" | "approved" | "rejected" | "briefing"
 export type BlogStatus = "generating" | "scoring" | "completed" | "draft" | "failed" | "published"

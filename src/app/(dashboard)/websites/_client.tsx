@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -86,7 +86,8 @@ export function WebsitesClient({ initialWebsites }: { initialWebsites: Website[]
         setOpen(false)
         toast.success("Website added successfully")
       } catch (err) {
-        toast.error("Failed to save website. Check your Sanity configuration.")
+        const msg = err instanceof Error ? err.message : String(err)
+        toast.error(`Failed to save website: ${msg}`)
         console.error(err)
       }
     })

@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2, Bot } from "lucide-react"
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter()
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -21,21 +22,21 @@ export default function LoginPage() {
     setLoading(true)
     setError("")
 
-    const res = await fetch("/api/auth/send-otp", {
+    const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ name, email, password }),
     })
 
     const data = await res.json()
 
     if (!res.ok) {
-      setError(data.error ?? "Sign in failed.")
+      setError(data.error ?? "Signup failed.")
       setLoading(false)
       return
     }
 
-    router.push(`/verify-otp?email=${encodeURIComponent(email)}&type=login`)
+    router.push(`/verify-otp?email=${encodeURIComponent(email)}&type=signup`)
   }
 
   return (
@@ -46,16 +47,28 @@ export default function LoginPage() {
             <Bot className="h-6 w-6 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">SEO Blog Agent</h1>
-          <p className="text-sm text-muted-foreground">AI-powered content at scale</p>
+          <p className="text-sm text-muted-foreground">Create your account</p>
         </div>
 
         <Card>
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-lg">Sign in</CardTitle>
-            <CardDescription>Enter your credentials — we'll send a verification code</CardDescription>
+            <CardTitle className="text-lg">Sign up</CardTitle>
+            <CardDescription>Enter your details to get started</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  autoComplete="name"
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -73,23 +86,24 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Min. 8 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  autoComplete="current-password"
+                  minLength={8}
+                  autoComplete="new-password"
                 />
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Continue
+                Create account
               </Button>
             </form>
             <p className="mt-4 text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Link href="/signup" className="font-medium text-foreground hover:underline">
-                Sign up
+              Already have an account?{" "}
+              <Link href="/login" className="font-medium text-foreground hover:underline">
+                Sign in
               </Link>
             </p>
           </CardContent>
